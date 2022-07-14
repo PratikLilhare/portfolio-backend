@@ -1,0 +1,62 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:13
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    networks:
+      - private
+
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: backend.dockerfile
+    command: /bin/bash -c "aerich migrate && aerich upgrade && uvicorn --reload --host 0.0.0.0 --port 80 app.main:app"
+    volumes:
+      - ./backend/app:/app
+    environment:
+      - SERVICE_NAME=Backend
+      - DATABASE_URL=${DATABASE_URL}
+      - GITHUB_USER=${GITHUB_USER}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+    expose: 
+      - 8080
+    ports:
+      - "8080:80"
+    depends_on:
+      - postgres
+    networks:
+      - public
+      - private
+
+  redis:
+    image: redis
+    ports:
+      - "16379:6379"
+    networks:
+      - public
+      - private
+
+  redisinsight:
+    image: redislabs/redisinsight
+    ports:
+      - 8001:8001
+
+  # pgadmin:
+  #   container_name: pgadmin
+  #   image: dpage/pgadmin4
+  #   environment:
+  #     - PGADMIN_DEFAULT_EMAIL=pgadmin4@pgadmin.org
+  #     - PGADMIN_DEFAULT_PASSWORD=1234
+  #   ports:
+  #     - "5050:80"
+  #   depends_on:
+  #     - postgres
+
+networks:
+  public:
+  private:
