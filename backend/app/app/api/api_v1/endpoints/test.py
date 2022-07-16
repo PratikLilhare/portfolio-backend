@@ -2,7 +2,7 @@ from typing import Any
 from aioredis import Redis
 from fastapi import APIRouter, Depends, Request
 
-from app.api.api_v1.dependencies import get_redis
+from app.api.api_v1.dependencies import get_redis, oauth2_scheme
 
 router = APIRouter()
 
@@ -10,9 +10,17 @@ router = APIRouter()
 @router.get("/healthcheck", status_code=200)
 async def test_me() -> Any:
     """
-    Test router endpoint.
+    Check status
     """
-    return {"Service": "OK"}
+    return {"Status": "OK"}
+
+
+@router.get("/security-healthcheck", status_code=200)
+async def test_me(token: str = Depends(oauth2_scheme)) -> Any:
+    """
+    Check authentication status.
+    """
+    return {"Status": "OK"}
 
 
 @router.get("/redis", status_code=200)

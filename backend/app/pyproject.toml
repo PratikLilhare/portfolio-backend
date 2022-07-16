@@ -15,6 +15,7 @@ aiohttp = "^3.8.1"
 tortoise-orm = "^0.19.2"
 asyncpg = "^0.26.0"
 aerich = "^0.6.3"
+python-multipart = "^0.0.5"
 
 [tool.poetry.dev-dependencies]
 

@@ -18,11 +18,8 @@ services:
     command: /bin/bash -c "aerich upgrade && uvicorn --reload --host 0.0.0.0 --port 80 app.main:app"
     volumes:
       - ./backend/app:/app
-    environment:
-      - SERVICE_NAME=Backend
-      - DATABASE_URL=${DATABASE_URL}
-      - GITHUB_USER=${GITHUB_USER}
-      - GITHUB_TOKEN=${GITHUB_TOKEN}
+    env_file:
+      - .env
     expose: 
       - 8080
     ports:

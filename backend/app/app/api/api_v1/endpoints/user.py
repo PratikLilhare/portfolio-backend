@@ -1,9 +1,28 @@
 from aioredis import Redis
 from app.api.api_v1.dependencies import Github, get_redis
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from app.config import settings
 
 
 router = APIRouter()
+token_router = APIRouter()
+
+USER_ID = settings.USER_ID
+USER_SECRET = settings.USER_SECRET
+
+
+@token_router.post("/")
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    if not form_data.username == USER_ID:
+        raise HTTPException(
+            status_code=400, detail="Incorrect username or password")
+    if not form_data.password == USER_SECRET:
+        raise HTTPException(
+            status_code=400, detail="Incorrect username or password")
+
+    return {"access_token": USER_SECRET, "token_type": "bearer"}
+
 
 ### Personal Project API
 

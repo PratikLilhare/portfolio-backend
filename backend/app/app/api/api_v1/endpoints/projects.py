@@ -2,17 +2,17 @@ import json
 from typing import List
 
 from aioredis import Redis
-from app.api.api_v1.dependencies import Github, get_redis
+from app.api.api_v1.dependencies import Github, get_redis, oauth2_scheme
 from app.models import Project, Project_Pydantic
 from app.schemas import ProjectSchema, Status
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from tortoise.contrib.fastapi import HTTPNotFoundError
-from tortoise.exceptions import DoesNotExist
 
 
 router = APIRouter()
 
-### Personal Project API
+# Personal Project API
+
 
 @router.get("/get_personal_projects", status_code=200)
 async def get_repos(request: Request, redis: Redis = Depends(get_redis)):
@@ -28,7 +28,7 @@ async def get_repos(request: Request, redis: Redis = Depends(get_redis)):
         return {"projects": json.loads(projects)}
 
 
-### Organizational Project API
+# Organizational Project API
 
 @router.get("/", response_model=List[Project_Pydantic], status_code=200)
 async def get_projects(request: Request, redis: Redis = Depends(get_redis)):
@@ -42,7 +42,7 @@ async def get_projects(request: Request, redis: Redis = Depends(get_redis)):
 
 @router.post("/", response_model=Status)
 async def save_projects(
-    request: Request, project: ProjectSchema, redis: Redis = Depends(get_redis)
+    request: Request, project: ProjectSchema, redis: Redis = Depends(get_redis), token: str = Depends(oauth2_scheme)
 ):
     try:
         await Project.create(**project.dict(exclude_unset=True))
@@ -54,7 +54,7 @@ async def save_projects(
 
 @router.put("/{id}", response_model=Status, responses={404: {"model": HTTPNotFoundError}})
 async def update_projects(
-    id: int, request: Request, project_schema: ProjectSchema, redis: Redis = Depends(get_redis)
+    id: int, request: Request, project_schema: ProjectSchema, redis: Redis = Depends(get_redis), token: str = Depends(oauth2_scheme)
 ):
     try:
         await Project.filter(id=id).update(**project_schema.dict(exclude_unset=True))
@@ -65,7 +65,7 @@ async def update_projects(
 
 
 @router.delete("/{id}", response_model=Status, responses={404: {"model": HTTPNotFoundError}})
-async def delete_user(id: int):
+async def delete_user(id: int, token: str = Depends(oauth2_scheme)):
     deleted_count = await Project.filter(id=id).delete()
     if not deleted_count:
         raise HTTPException(status_code=404, detail=f"Project {id} not found")
