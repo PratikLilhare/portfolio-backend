@@ -11,7 +11,7 @@ app.include_router(api_router, prefix="/api/v1")
 app.include_router(token_router, prefix="/token", tags=["Token"])
 app.add_middleware(CORSMiddleware,
                    allow_origins=["http://localhost:3000",
-                                  "http://pratiklilhare.com"],
+                                  "https://pratiklilhare.com"],
                    allow_credentials=True,
                    allow_methods=["*"],
                    allow_headers=["*"],
