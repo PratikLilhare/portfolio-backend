@@ -17,7 +17,7 @@ app.add_middleware(CORSMiddleware,
                    allow_headers=["*"],
                    )
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=[
-                   "*.pratiklilhare.com", "127.0.0.1"])
+                   "pratiklilhare.com", "127.0.0.1"])
 
 
 @app.on_event("startup")
