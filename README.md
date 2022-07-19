@@ -39,3 +39,38 @@ docker-compose exec backend aerich init -t app.db.TORTOISE_ORM
 docker-compose exec backend aerich init-db
 docker-compose exec backend aerich migrate
 ```
+
+---
+
+## Deployment
+
+### Nginx:
+
+
+#### Installation
+```bash
+sudo apt-get install nginx
+```
+
+#### Create configuration file for nginx
+```bash
+sudo vi /etc/nginx/sites-enabled/portfolio
+```
+
+#### Add configuration for nginx
+```conf
+server {
+    listen 80;
+    server_name <PUBLIC_IP>;
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+    }
+}
+```
+
+#### Restart nginx and docker
+```
+sudo service nginx restart
+sudo service docker restart
+sudo docker-compose up
+```
