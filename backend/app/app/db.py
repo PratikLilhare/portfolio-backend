@@ -1,6 +1,6 @@
-from fastapi import FastAPI
 from app.config import settings
-from tortoise.contrib.fastapi import register_tortoise
+from tortoise import Tortoise
+
 
 TORTOISE_ORM = {
     "connections": {"default": settings.DATABASE_URL},
@@ -13,11 +13,16 @@ TORTOISE_ORM = {
 }
 
 
-def init_db(app: FastAPI) -> None:
-    register_tortoise(
-        app,
+async def init_db() -> None:
+    await Tortoise.init(
         db_url=settings.DATABASE_URL,
-        modules={"models": ["app.models"]},
-        generate_schemas=False,
-        add_exception_handlers=True,
+        modules={'models': ['app.models']},
     )
+    await Tortoise.generate_schemas()
+    
+
+async def close_db_connections() -> None:
+    await Tortoise.close_connections()
+
+
+Tortoise.init_models(['app.models'], 'models')

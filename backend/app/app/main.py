@@ -1,8 +1,9 @@
+import asyncio
 import aioredis
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
-from app.db import init_db
+from app.db import close_db_connections, init_db
 from app.api.api_v1.api import api_router
 from app.api.api_v1.endpoints.user import token_router
 
@@ -25,10 +26,11 @@ async def startup_event():
     app.state.redis = await aioredis.from_url(
         "redis://redis", decode_responses=True
     )
-    init_db(app)
+    await init_db()
 
 
 @app.on_event("shutdown")
 async def close_redis():
+    await close_db_connections()
     await app.state.redis.close()
 
