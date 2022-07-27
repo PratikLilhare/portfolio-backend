@@ -19,6 +19,7 @@ class Skill(Model):
 class Experience(Model):
     start = fields.DateField()
     end = fields.DateField(required=False, null=True)
+    title = fields.CharField(max_length=20, null=True)
     company = fields.CharField(max_length=20)
     skills = fields.ManyToManyField("models.Skill", related_name="skills", on_delete=fields.CASCADE)
     description = fields.TextField()
