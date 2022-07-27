@@ -11,14 +11,13 @@ app = FastAPI()
 app.include_router(api_router, prefix="/api/v1")
 app.include_router(token_router, prefix="/token", tags=["Token"])
 app.add_middleware(CORSMiddleware,
-                   allow_origins=["https://www.pratiklilhare.com/",
-                                  "http://localhost:3000"],
+                   allow_origins=["*"],
                    allow_credentials=True,
                    allow_methods=["*"],
                    allow_headers=["*"],
                    )
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=[
-                   "pratiklilhare.com", "127.0.0.1"])
+                   "*"])
 
 
 @app.on_event("startup")
