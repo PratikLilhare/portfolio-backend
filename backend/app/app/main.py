@@ -11,7 +11,7 @@ app = FastAPI()
 app.include_router(api_router, prefix="/api/v1")
 app.include_router(token_router, prefix="/token", tags=["Token"])
 app.add_middleware(CORSMiddleware,
-                   allow_origins=["https://pratiklilhare.com",
+                   allow_origins=["https://www.pratiklilhare.com/",
                                   "http://localhost:3000"],
                    allow_credentials=True,
                    allow_methods=["*"],
