@@ -15,7 +15,7 @@ async def get_resume_url(request: Request) -> Any:
     try:
         response = {
             "data": {
-                "url": "https://drive.google.com/file/d/17fCLYT6bL32__QO_2VlF51w-QvD2Tnog/preview"
+                "url": "https://drive.google.com/file/d/1f8D8CWME3Wm4XIOkFInaz_VQiC8M1CjX/preview"
             },
             "message": "fetched successfully",
         }
