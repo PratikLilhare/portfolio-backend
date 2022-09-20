@@ -7,7 +7,7 @@ RUN pip install poetry && \
 
 COPY ./app/pyproject.toml ./app/poetry.lock* /app/
 
-RUN poetry install --no-root --no-dev
+RUN poetry install --no-root --only main
 
 COPY ./app /app
 ENV PYTHONPATH=/app
